@@ -1,9 +1,11 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { DUMMY_ALL_BLOG_DATA } from "../../DUMMY_DATA";
 
 function Centerdiv() {
+  const navigate = useNavigate();
   const handleClick = async (id) => {
-    console.log("hi");
+    navigate(`./blog/${id}`);
   };
   return (
     <>
@@ -22,11 +24,11 @@ function Centerdiv() {
               />
             </div>
 
-            <div className="tags mt-1 flex flex-wrap justify-center">
+            <div className="tags mt-2 mb-2 space-x-4 flex overflow-x-auto scrollbar-hide ">
               {item.tags.map((item) => (
                 <p
                   key={item}
-                  className="m-1 p-1 bg-gradient-to-r from-pink-300 to-purple-300 rounded-xl text-black font-bold font-Indie"
+                  className="p-1 bg-gradient-to-r from-pink-300 to-purple-300 rounded-xl text-black font-bold font-Indie"
                 >
                   {item}
                 </p>

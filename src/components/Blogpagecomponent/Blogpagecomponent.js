@@ -1,6 +1,11 @@
 import { PencilIcon, TrashIcon } from "@heroicons/react/outline";
+import { useParams } from "react-router-dom";
 import { DUMMY_SIGLE_BLOG_DATA } from "../../DUMMY_DATA";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
 function Blogpagecomponent() {
+  const { id } = useParams();
   return (
     <>
       {DUMMY_SIGLE_BLOG_DATA.map((item) => (
@@ -43,8 +48,15 @@ function Blogpagecomponent() {
             </div>
           </div>
           <div className="content">
-            <p className="text-[#8996d4] text-3xl md:text-5xl first-letter:uppercase first-letter:text-5xl md:first-letter:text-7xl first-letter:font-bold font-Indie">
-              {item.content}
+            <p
+              className="prose prose-invert prose-img:rounded-xl prose-headings:text-pink-500 prose-a:text-green-400 prose-code:text-purple-400 prose-strong:font-bold prose-strong:text-red-500 text-[#8996d4] text-4xl
+            prose-pre:bg-gradient-to-r from-[#e5b4e480] to-[#a390d47a]
+            "
+            >
+              <ReactMarkdown
+                children={item.content}
+                remarkPlugins={[remarkGfm]}
+              />
             </p>
           </div>
         </div>
