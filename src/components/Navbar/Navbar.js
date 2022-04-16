@@ -11,7 +11,7 @@ import NavbarSingleItem from "./NavbarSingleItem";
 import { Link } from "react-router-dom";
 
 function Navbar() {
-  const user = true;
+  const user = false;
   const ulRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const handleClick = () => {
@@ -71,9 +71,11 @@ function Navbar() {
             </Link>
           </li>
           <li>
-            <Link to="/blog/new">
-              <NavbarSingleItem Icon={PencilAltIcon} title={"Write"} />
-            </Link>
+            {user && (
+              <Link to="/blog/new">
+                <NavbarSingleItem Icon={PencilAltIcon} title={"Write"} />
+              </Link>
+            )}
           </li>
           <li>
             {user ? (

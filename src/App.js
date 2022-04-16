@@ -8,7 +8,7 @@ import Loginpage from "./Routes/Loginpage";
 import Signuppage from "./Routes/Signuppage";
 
 function App() {
-  const user = true;
+  const user = false;
   return (
     <>
       <Navbar />

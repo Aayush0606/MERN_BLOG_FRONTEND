@@ -1,6 +1,8 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { PlusCircleIcon } from "@heroicons/react/outline";
+
 function Newblogcomponent() {
+  const [file, setFile] = useState(null);
   const imageRef = useRef(null);
   const titleRef = useRef(null);
   const descriptionRef = useRef(null);
@@ -8,11 +10,13 @@ function Newblogcomponent() {
   return (
     <>
       <div className="wrapper w-full  p-6">
-        <img
-          className="w-full h-80 rounded-lg  mb-4"
-          src="https://images.saymedia-content.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cfl_progressive%2Cq_auto:eco%2Cw_1200/MTc5NjQ1ODEzMTgwNDA5Njc0/the-tragedy-of-eren-yeager-how-the-character-changes-throughout-attack-on-titan.jpg"
-          alt="thumbnail"
-        />
+        {file && (
+          <img
+            className="w-full h-80 rounded-lg  mb-4" // src="https://images.saymedia-content.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cfl_progressive%2Cq_auto:eco%2Cw_1200/MTc5NjQ1ODEzMTgwNDA5Njc0/the-tragedy-of-eren-yeager-how-the-character-changes-throughout-attack-on-titan.jpg"
+            src={URL.createObjectURL(file)}
+            alt="thumbnail"
+          />
+        )}
         <form className="newblog_form">
           <div className="parent space-y-2 ">
             <div className="file_title flex items-center">
@@ -25,6 +29,7 @@ function Newblogcomponent() {
                 type="file"
                 name="file_input"
                 id="file_input"
+                onChange={(e) => setFile(e.target.files[0])}
               />
               <textarea
                 className="grow h-24 scrollbar bg-transparent 

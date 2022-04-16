@@ -1,6 +1,7 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { PlusCircleIcon } from "@heroicons/react/outline";
 function Usercomponent() {
+  const [file, setFile] = useState(null);
   const imageRef = useRef(null);
   const nameRef = useRef(null);
   const emailRef = useRef(null);
@@ -13,11 +14,13 @@ function Usercomponent() {
             <div className="profile_image_div">
               <div className="m-2 author flex items-center space-x-2">
                 <div className="author_image ">
-                  <img
-                    className="border-[#7f8da1] border-[1px] h-12 w-12 xs:h-16 xs:w-16 sm:h-20 sm:w-20 rounded-full "
-                    src="https://images.saymedia-content.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cfl_progressive%2Cq_auto:eco%2Cw_1200/MTc5NjQ1ODEzMTgwNDA5Njc0/the-tragedy-of-eren-yeager-how-the-character-changes-throughout-attack-on-titan.jpg"
-                    alt="author pfp"
-                  />
+                  {file && (
+                    <img
+                      className="border-[#7f8da1] border-[1px] h-12 w-12 xs:h-16 xs:w-16 sm:h-20 sm:w-20 rounded-full "
+                      src={URL.createObjectURL(file)}
+                      alt="author pfp"
+                    />
+                  )}
                 </div>
                 <div className="add_icon ">
                   <label htmlFor="file_input">
@@ -29,6 +32,7 @@ function Usercomponent() {
                     type="file"
                     name="file_input"
                     id="file_input"
+                    onChange={(e) => setFile(e.target.files[0])}
                   />
                 </div>
               </div>
