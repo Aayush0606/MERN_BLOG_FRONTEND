@@ -1,26 +1,104 @@
-import { useRef, useState } from "react";
-import { PlusCircleIcon } from "@heroicons/react/outline";
+import { useContext, useRef, useState } from "react";
+import { PlusCircleIcon, EyeOffIcon, EyeIcon } from "@heroicons/react/outline";
+import { Context } from "../../Context/Context";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function Usercomponent() {
   const [file, setFile] = useState(null);
+  const [type, setType] = useState("password");
   const imageRef = useRef(null);
-  const nameRef = useRef(null);
+  const usernameRef = useRef(null);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
+  const { user, dispatch } = useContext(Context);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (file === null) {
+      const notify = () =>
+        toast.error("Upload pfp using + icon", {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      notify();
+    } else {
+      const userData = new FormData();
+      userData.append("username", usernameRef.current.value);
+      userData.append("email", emailRef.current.value);
+      userData.append("password", passwordRef.current.value);
+      userData.append("userImage", file);
+      userData.append("id", user._id);
+      userData.append("userImage", user.userImage);
+      const postDataResult = await fetch(
+        `${process.env.REACT_APP_SERVER_URL}api/user/updateuser/${user._id}`,
+        {
+          method: "PUT",
+          body: userData,
+        }
+      ).then((data) => data.json());
+
+      if (postDataResult.others) {
+        const notify = () =>
+          toast.success("Profile updated", {
+            position: "bottom-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        notify();
+        dispatch({ type: "USER_FETCHED", payload: postDataResult.others });
+      } else {
+        const notify = () =>
+          toast.error(postDataResult.message, {
+            position: "bottom-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        notify();
+      }
+    }
+  };
+
   return (
     <>
+      <ToastContainer
+        theme="dark"
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <div className="wrapper w-full p-6">
-        <form>
+        <form onSubmit={handleSubmit} encType="multipart/form-data">
           <div className="parent">
             <div className="profile_image_div">
               <div className="m-2 author flex items-center space-x-2">
                 <div className="author_image ">
-                  {file && (
-                    <img
-                      className="border-[#7f8da1] border-[1px] h-12 w-12 xs:h-16 xs:w-16 sm:h-20 sm:w-20 rounded-full "
-                      src={URL.createObjectURL(file)}
-                      alt="author pfp"
-                    />
-                  )}
+                  <img
+                    className="border-[#7f8da1] border-[1px] h-12 w-12 xs:h-16 xs:w-16 sm:h-20 sm:w-20 rounded-full "
+                    src={
+                      file
+                        ? URL.createObjectURL(file)
+                        : `${process.env.REACT_APP_SERVER_URL}${user.userImage}`
+                    }
+                    alt="author pfp"
+                  />
                 </div>
                 <div className="add_icon ">
                   <label htmlFor="file_input">
@@ -45,7 +123,7 @@ function Usercomponent() {
                 Username
               </label>
               <input
-                ref={nameRef}
+                ref={usernameRef}
                 className="text-[#8996d4] text-xl bg-transparent
                 border-b-2 border-[#008080] outline-none focus:border-red-500
                 rounded-lg h-10"
@@ -69,7 +147,7 @@ function Usercomponent() {
                 id="user_email"
               />
             </div>
-            <div className="user_password flex flex-col mt-6     space-y-2">
+            <div className="relative user_password flex flex-col mt-6     space-y-2">
               <label
                 htmlFor="user_password"
                 className="text-indigo-500   font-Pacifico text-xl"
@@ -79,10 +157,20 @@ function Usercomponent() {
               <input
                 ref={passwordRef}
                 className="text-[#8996d4] text-xl bg-transparent border-b-2 border-[#008080] outline-none focus:border-red-500 rounded-lg h-10"
-                type="password"
+                type={type}
                 name="user_password"
                 id="user_password"
               />
+              <div className="text-[#008080] absolute top-10  right-0">
+                <p
+                  onClick={() =>
+                    setType(type === "password" ? "text" : "password")
+                  }
+                  className="w-6 h-6 hover:cursor-pointer"
+                >
+                  {type === "password" ? <EyeOffIcon /> : <EyeIcon />}
+                </p>
+              </div>
             </div>
             <div className="button_div flex justify-center mt-4">
               <button

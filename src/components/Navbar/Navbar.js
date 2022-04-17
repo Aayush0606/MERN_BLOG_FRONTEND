@@ -1,17 +1,19 @@
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import {
   HomeIcon,
   PencilAltIcon,
   LoginIcon,
   LogoutIcon,
   MenuIcon,
-  UserIcon,
+  SunIcon,
+  MoonIcon,
 } from "@heroicons/react/outline";
 import NavbarSingleItem from "./NavbarSingleItem";
 import { Link } from "react-router-dom";
+import { Context } from "../../Context/Context";
 
 function Navbar() {
-  const user = false;
+  const { user, dispatch, theme } = useContext(Context);
   const ulRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const handleClick = () => {
@@ -79,7 +81,7 @@ function Navbar() {
           </li>
           <li>
             {user ? (
-              <Link to="/login">
+              <Link to="/login" onClick={() => dispatch({ type: "LOGOUT" })}>
                 <NavbarSingleItem Icon={LogoutIcon} title={"Logout"} />
               </Link>
             ) : (
@@ -89,11 +91,22 @@ function Navbar() {
             )}
           </li>
           <li>
+            {theme === true ? (
+              <div onClick={() => dispatch({ type: "LIGHTMODE" })}>
+                <NavbarSingleItem Icon={SunIcon} title={"Light"} />
+              </div>
+            ) : (
+              <div onClick={() => dispatch({ type: "DARKMODE" })}>
+                <NavbarSingleItem Icon={MoonIcon} title={"Dark"} />
+              </div>
+            )}
+          </li>
+          <li>
             {user && (
               <Link to="/user">
                 <img
                   className="border-[#fca5a5] border-2 h-12 w-12 sm:h-20 sm:w-20  rounded-full cursor-pointer hover:animate-pulse "
-                  src="https://images.saymedia-content.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cfl_progressive%2Cq_auto:eco%2Cw_1200/MTc5NjQ1ODEzMTgwNDA5Njc0/the-tragedy-of-eren-yeager-how-the-character-changes-throughout-attack-on-titan.jpg "
+                  src={`${process.env.REACT_APP_SERVER_URL}${user.userImage}`}
                   alt="pfp"
                 />
               </Link>

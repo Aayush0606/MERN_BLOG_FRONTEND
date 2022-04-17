@@ -1,9 +1,8 @@
 import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { PlusCircleIcon } from "@heroicons/react/outline";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { EyeOffIcon, EyeIcon } from "@heroicons/react/outline";
+import { EyeOffIcon, EyeIcon, PlusCircleIcon } from "@heroicons/react/outline";
 
 function Signupcompononet() {
   const [file, setFile] = useState(null);
@@ -27,7 +26,6 @@ function Signupcompononet() {
           progress: undefined,
         });
       notify();
-      navigate("/login");
     } else {
       const userData = new FormData();
       userData.append("username", usernameRef.current.value);
@@ -43,8 +41,8 @@ function Signupcompononet() {
       ).then((data) => data.json());
 
       if (postDataResult.status && postDataResult.status === 200) {
-        const notify = () =>
-          toast.success("Account created!", {
+        const notify = (msg) =>
+          toast.success(msg, {
             position: "bottom-right",
             autoClose: 2000,
             hideProgressBar: false,
@@ -53,7 +51,11 @@ function Signupcompononet() {
             draggable: true,
             progress: undefined,
           });
-        notify();
+        notify("Account created!");
+        notify("Redirecting!");
+        setTimeout(() => {
+          navigate("/login");
+        }, 3000);
       } else {
         const notify = () =>
           toast.error(postDataResult.message, {
@@ -94,7 +96,7 @@ function Signupcompononet() {
             />
           </header>
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} encType="multipart/form-data">
             <div className="flex items-center space-x-2">
               <div className="author_image ">
                 {file && (

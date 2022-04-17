@@ -25,6 +25,7 @@ function Homepage() {
       setBlogs(null);
       notify();
     } else {
+      console.log(fetchedBlogs);
       setBlogs(fetchedBlogs);
     }
   };

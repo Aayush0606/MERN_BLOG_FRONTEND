@@ -1,13 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { PencilIcon, TrashIcon } from "@heroicons/react/outline";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { DUMMY_SIGLE_BLOG_DATA } from "../../DUMMY_DATA";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Context } from "../../Context/Context";
 
 function Blogpagecomponent() {
+  const { theme } = useContext(Context);
   const { id } = useParams();
   const [blog, setBlog] = useState(null);
   const fetchPost = async () => {
@@ -27,7 +29,6 @@ function Blogpagecomponent() {
         });
       notify();
     } else {
-      console.log([fetchedBlog]);
       setBlog([fetchedBlog]);
     }
   };
@@ -69,20 +70,22 @@ function Blogpagecomponent() {
               </p>
             </div>
             <div className="author_date flex flex-col  mb-4 md:flex-row md:justify-between">
-              <div className="m-2 author flex items-center space-x-2">
-                <div className="author_image ">
-                  <img
-                    className="border-[#7f8da1] border-[1px] h-8 w-8 xs:h-10 xs:w-10 sm:h-12 sm:w-12 rounded-full "
-                    src={item.authourImageURL || ""}
-                    alt="author pfp"
-                  />
+              <Link to={`/?user=${item.authorName}`}>
+                <div className="m-2 author flex items-center space-x-2">
+                  <div className="author_image ">
+                    <img
+                      className="border-[#7f8da1] border-[1px] h-8 w-8 xs:h-10 xs:w-10 sm:h-12 sm:w-12 rounded-full "
+                      src={`${process.env.REACT_APP_SERVER_URL}${item.authourImageURL}`}
+                      alt="author pfp"
+                    />
+                  </div>
+                  <div className="author_name">
+                    <p className="xs:text-xl sm:text-2xl text-[#7f8da1]">
+                      {item.authorName}
+                    </p>
+                  </div>
                 </div>
-                <div className="author_name">
-                  <p className="xs:text-xl sm:text-2xl text-[#7f8da1]">
-                    {item.authorName}
-                  </p>
-                </div>
-              </div>
+              </Link>
               <div className="date">
                 <p className="xs:text-xl sm:text-2xl text-[#7f8da1]">
                   {new Date(item.updatedAt).toDateString()}
@@ -90,20 +93,24 @@ function Blogpagecomponent() {
               </div>
             </div>
             <div className="tags mt-2 mb-2 space-x-4 flex overflow-x-auto scrollbar-hide ">
-              {item.categories.map((item, idx) => (
-                <p
-                  key={idx}
-                  className="p-1 bg-gradient-to-r from-pink-300 to-purple-300 rounded-xl text-black font-bold font-Indie"
-                >
-                  {item}
-                </p>
+              {item.categories.split(",").map((item, idx) => (
+                <Link to={`/?categories=${item}`}>
+                  <p
+                    key={idx}
+                    className="p-1 bg-gradient-to-r from-pink-300 to-purple-300 rounded-xl text-black font-bold font-Indie"
+                  >
+                    {item}
+                  </p>
+                </Link>
               ))}
             </div>
             <div className="content">
               <p
-                className="prose prose-invert prose-img:rounded-xl prose-headings:text-pink-500 prose-a:text-green-400 prose-code:text-purple-400 prose-strong:font-bold prose-strong:text-red-500 text-[#8996d4] text-4xl
+                className={`prose ${
+                  theme ? `prose-invert` : ``
+                } prose-img:rounded-xl prose-headings:text-pink-500 prose-a:text-green-400 prose-code:text-purple-400 prose-strong:font-bold prose-strong:text-red-500 text-[#8996d4] text-4xl
             prose-pre:bg-gradient-to-r from-[#e5b4e480] to-[#a390d47a]
-            "
+            `}
               >
                 <ReactMarkdown
                   children={item.content}

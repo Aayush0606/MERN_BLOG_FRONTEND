@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 function Centerdiv({ blogs }) {
   const navigate = useNavigate();
   const handleClick = async (id) => {
-    navigate(`./blog/${id}`);
+    navigate(`/blog/${id}`);
   };
   return (
     <>
@@ -24,7 +24,7 @@ function Centerdiv({ blogs }) {
             </div>
 
             <div className="tags mt-2 mb-2 space-x-4 flex overflow-x-auto scrollbar-hide ">
-              {item.categories.map((item, idx) => (
+              {item.categories.split(",").map((item, idx) => (
                 <p
                   key={idx}
                   className="p-1 bg-gradient-to-r from-pink-300 to-purple-300 rounded-xl text-black font-bold font-Indie"
@@ -53,7 +53,7 @@ function Centerdiv({ blogs }) {
               <div className="author_image ">
                 <img
                   className="border-[#7f8da1] border-[1px] h-12 w-12 xs:h-14 xs:w-14 sm:h-16 sm:w-16 rounded-full "
-                  src={item.authourImageURL || ""}
+                  src={`${process.env.REACT_APP_SERVER_URL}${item.authourImageURL}`}
                   alt="author pfp"
                 />
               </div>

@@ -6,11 +6,13 @@ import Newblog from "./Routes/Newblog";
 import Userprofile from "./Routes/Userprofile";
 import Loginpage from "./Routes/Loginpage";
 import Signuppage from "./Routes/Signuppage";
+import { useContext } from "react";
+import { Context } from "./Context/Context";
 
 function App() {
-  const user = false;
+  const { user, theme } = useContext(Context);
   return (
-    <>
+    <div className={theme ? "darkTheme" : ""}>
       <Navbar />
       <div className="pt-24">
         <Routes>
@@ -31,7 +33,7 @@ function App() {
           />
         </Routes>
       </div>
-    </>
+    </div>
   );
 }
 
