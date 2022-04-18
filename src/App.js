@@ -23,6 +23,10 @@ function App() {
             element={user ? <Newblog /> : <Loginpage />}
           />
           <Route
+            path="/blog/edit/:id"
+            element={user ? <Newblog /> : <Loginpage />}
+          />
+          <Route
             path="/user"
             element={user ? <Userprofile /> : <Loginpage />}
           />

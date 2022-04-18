@@ -1,18 +1,24 @@
-import { useContext, useRef, useState } from "react";
+import { useContext, useRef, useState, useEffect } from "react";
 import { PlusCircleIcon } from "@heroicons/react/outline";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Context } from "../../Context/Context";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 function Newblogcomponent() {
   const { user } = useContext(Context);
+  const { id } = useParams();
   const [file, setFile] = useState(null);
   const imageRef = useRef(null);
   const titleRef = useRef(null);
   const descriptionRef = useRef(null);
   const contentRef = useRef(null);
   const categoryRef = useRef(null);
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("");
+  const [imageURL, setImageURL] = useState(null);
+  const [description, setDescription] = useState("");
+  const [content, setContent] = useState("");
   const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,14 +43,14 @@ function Newblogcomponent() {
       userData.append("categories", categoryRef.current.value);
       userData.append("authourImageURL", user.userImage);
       userData.append("blogImage", file);
-      const postDataResult = await fetch(
-        `${process.env.REACT_APP_SERVER_URL}api/blog/new`,
-        {
-          method: "POST",
-          body: userData,
-        }
-      ).then((data) => data.json());
+      const url = id
+        ? `${process.env.REACT_APP_SERVER_URL}api/blog/edit/${id}`
+        : `${process.env.REACT_APP_SERVER_URL}api/blog/new`;
 
+      const postDataResult = await fetch(url, {
+        method: id ? "PUT" : "POST",
+        body: userData,
+      }).then((data) => data.json());
       if (postDataResult.addedBlog) {
         const notify = (msg) =>
           toast.success(msg, {
@@ -65,7 +71,7 @@ function Newblogcomponent() {
             body: JSON.stringify({ name: item }),
           }).then((data) => data.json());
         });
-        notify("Blog posted!");
+        notify(id ? "Blog Updated!" : "Blog posted!");
         notify("Redirecting!");
         setTimeout(() => {
           navigate(`/blog/${postDataResult.addedBlog._id}`);
@@ -85,6 +91,36 @@ function Newblogcomponent() {
       }
     }
   };
+  const fetchPost = async () => {
+    const fetchedBlog = await fetch(
+      `${process.env.REACT_APP_SERVER_URL}api/blog/${id}`
+    ).then((data) => data.json());
+    if (fetchedBlog.message) {
+      const notify = () =>
+        toast.error("No such blog exist to edit!", {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      notify();
+    } else {
+      setTitle(fetchedBlog.title);
+      setCategory(fetchedBlog.categories);
+      setImageURL(fetchedBlog.blogImage);
+      setDescription(fetchedBlog.description);
+      setContent(fetchedBlog.content);
+    }
+  };
+  useEffect(() => {
+    if (id) {
+      fetchPost();
+    }
+  }, []);
+
   return (
     <>
       <ToastContainer
@@ -100,11 +136,14 @@ function Newblogcomponent() {
         pauseOnHover
       />
       <div className="wrapper w-full p-6">
-        {file && (
+        {(file || imageURL) && (
           <div>
             <img
               className=" w-full rounded-xl h-96 mb-4 "
-              src={URL.createObjectURL(file)}
+              src={
+                (file && URL.createObjectURL(file)) ||
+                `${process.env.REACT_APP_SERVER_URL}${imageURL}`
+              }
               alt="thumbnail"
             />
           </div>
@@ -125,6 +164,8 @@ function Newblogcomponent() {
                   onChange={(e) => setFile(e.target.files[0])}
                 />
                 <textarea
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
                   required
                   className="grow h-24 scrollbar bg-transparent 
                 border-b-2 border-indigo-500 outline-none focus:border-red-500
@@ -138,6 +179,8 @@ function Newblogcomponent() {
               </div>
               <div className="category_div ">
                 <textarea
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
                   required
                   ref={categoryRef}
                   className="w-full scrollbar h-20 bg-transparent
@@ -150,6 +193,8 @@ function Newblogcomponent() {
               </div>
               <div className="description_div ">
                 <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
                   required
                   ref={descriptionRef}
                   className="w-full scrollbar h-20 bg-transparent
@@ -162,6 +207,8 @@ function Newblogcomponent() {
               </div>
               <div className="content_div">
                 <textarea
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
                   required
                   className="w-full scrollbar h-40 bg-transparent 
                 border-b-2 border-indigo-500 outline-none focus:border-red-500
@@ -178,7 +225,7 @@ function Newblogcomponent() {
                 className="bg-gradient-to-r from-indigo-500 to-pink-500  text-black font-bold h-12 w-16 rounded-xl "
                 type="submit"
               >
-                Publish
+                {id ? "Update" : "Publish"}
               </button>
             </div>
           </form>
