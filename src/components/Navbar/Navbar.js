@@ -67,19 +67,19 @@ function Navbar() {
         md:bg-transparent
         "
         >
-          <li>
+          <li onClick={() => handleClick()}>
             <Link to="/">
               <NavbarSingleItem Icon={HomeIcon} title={"Home"} />
             </Link>
           </li>
-          <li>
+          <li onClick={() => handleClick()}>
             {user && (
               <Link to="/blog/new">
                 <NavbarSingleItem Icon={PencilAltIcon} title={"Write"} />
               </Link>
             )}
           </li>
-          <li>
+          <li onClick={() => handleClick()}>
             {user ? (
               <Link to="/login" onClick={() => dispatch({ type: "LOGOUT" })}>
                 <NavbarSingleItem Icon={LogoutIcon} title={"Logout"} />
@@ -90,7 +90,7 @@ function Navbar() {
               </Link>
             )}
           </li>
-          <li>
+          <li onClick={() => handleClick()}>
             {theme === true ? (
               <div onClick={() => dispatch({ type: "LIGHTMODE" })}>
                 <NavbarSingleItem Icon={SunIcon} title={"Light"} />
@@ -101,7 +101,7 @@ function Navbar() {
               </div>
             )}
           </li>
-          <li>
+          <li onClick={() => handleClick()}>
             {user && (
               <Link to="/user">
                 <img

@@ -1,7 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { PencilIcon, TrashIcon } from "@heroicons/react/outline";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { DUMMY_SIGLE_BLOG_DATA } from "../../DUMMY_DATA";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ToastContainer, toast } from "react-toastify";
@@ -83,6 +82,7 @@ function Blogpagecomponent() {
 
   useEffect(() => {
     fetchPost();
+    /* eslint-disable */
   }, []);
 
   return (

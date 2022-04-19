@@ -6,6 +6,7 @@ import Newblog from "./Routes/Newblog";
 import Userprofile from "./Routes/Userprofile";
 import Loginpage from "./Routes/Loginpage";
 import Signuppage from "./Routes/Signuppage";
+import NotFound from "./Routes/NotFound";
 import { useContext } from "react";
 import { Context } from "./Context/Context";
 
@@ -35,6 +36,7 @@ function App() {
             path="/signup"
             element={user ? <Homepage /> : <Signuppage />}
           />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
     </div>
